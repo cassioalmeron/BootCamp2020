@@ -1,7 +1,9 @@
-function App() {
-  return (
-    <h1>Cássio Almeron</h1>
-  );
-}
+import Routes from './routes'
+import {BrowserRouter} from 'react-router-dom'
+
+const App : React.FC = () =>
+  <BrowserRouter>
+    <Routes />
+  </BrowserRouter>
 
 export default App;
