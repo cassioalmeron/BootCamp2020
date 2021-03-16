@@ -1,12 +1,12 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
 import * as Yup from 'yup';
 import logoImg from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import AuthContext from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import getValidationErrors from '../../utls/getValidationErrors';
 import { Background, Container, Content } from './styles';
 
@@ -23,7 +23,7 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuth();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
