@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useTransition } from 'react-spring';
 import { Container } from './styles';
 import { ToastMessage, useToast } from '../../hooks/toast';
 import Toast from './Toast';
@@ -8,16 +9,20 @@ interface ToastContainerProps {
 }
 
 const ToastContainer: React.FC<ToastContainerProps> = ({ messages }) => {
-  const { removeToast } = useToast();
-
-  const handleRemoveToast = useCallback((id: string) => {
-    removeToast(id);
-  }, []);
+  const messagesWithTransitions = useTransition(
+    messages,
+    message => message.id,
+    {
+      from: { right: '-120%', opacity: 0 },
+      enter: { right: '0%', opacity: 1 },
+      leave: { right: '-120%', opacity: 0 },
+    },
+  );
 
   return (
     <Container>
-      {messages.map(message => (
-        <Toast key={message.id} message={message} />
+      {messagesWithTransitions.map(({ item, key, props }) => (
+        <Toast key={key} message={item} style={props} />
       ))}
     </Container>
   );
