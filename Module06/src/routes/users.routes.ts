@@ -9,6 +9,7 @@ const router = Router();
 const upload = multer(uploadConfig);
 
 router.post('/', async (request, response) => {
+  const createUser = new CreateUserService();
   const user = await createUser.execute(request.body);
 
   delete user.password;
