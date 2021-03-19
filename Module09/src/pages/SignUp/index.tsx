@@ -15,6 +15,7 @@ import * as Yup from 'yup';
 import logoImg from '../../assets/logo.png';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import api from '../../services/api';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { BackToSignIn, BackToSignInText, Container, Title } from './styles';
 
@@ -38,20 +39,14 @@ const SignUp: React.FC = () => {
     try {
       await schema.validate(data, { abortEarly: false });
 
-      // await api.post('/users', data);
-
-      // history.push('/');
-
-      // addToast({
-      //   type: 'success',
-      //   title: 'Cadastro realizado',
-      //   description: 'Você já pode fazer seu logon no GoBarber!',
-      // });
+      await api.post('/users', data);
 
       Alert.alert(
         'Cadastro realizado',
         'Você já pode fazer seu logon no GoBarber!',
       );
+
+      navigation.goBack();
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -123,7 +118,7 @@ const SignUp: React.FC = () => {
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
               <Button onPress={() => formRef.current?.submitForm()}>
-                Entrar
+                Cadastrar
               </Button>
             </Form>
           </Container>
