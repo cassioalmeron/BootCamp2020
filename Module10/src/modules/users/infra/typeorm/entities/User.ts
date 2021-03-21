@@ -1,8 +1,8 @@
 import { Entity, Column } from 'typeorm';
-import ModelBase from './ModelBase';
+import EntityBase from '@shared/infra/typeorm/EntityBase';
 
 @Entity('users')
-class User extends ModelBase {
+class User extends EntityBase {
   @Column()
   name: string;
 

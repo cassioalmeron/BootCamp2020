@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import EntityBase from '../../../shared/EntityBase';
-import User from './User';
+import User from '@modules/users/infra/typeorm/entities/User';
+import EntityBase from '@shared/infra/typeorm/EntityBase';
 
 @Entity('appointments')
 class Appointment extends EntityBase {
