@@ -4,13 +4,13 @@ import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import IUsersRepository from '../repositories/IUsersRepository';
 
-@injectable()
 interface IRequestDto {
   name: string;
   email: string;
   password: string;
 }
 
+@injectable()
 class CreateUserService {
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
