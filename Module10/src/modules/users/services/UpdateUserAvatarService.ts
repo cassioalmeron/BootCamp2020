@@ -3,6 +3,7 @@ import fs from 'fs';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
+import IStoragemProvider from '@shared/container/providers/StorageProvider/models/IStoragemProvider';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -15,6 +16,7 @@ interface IRequestDto {
 class UpdateUserAvatarService {
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
+    @inject('StoragemProvider') private storagemProvider: IStoragemProvider,
   ) {}
 
   public async execute({
@@ -27,13 +29,12 @@ class UpdateUserAvatarService {
       throw new AppError('Only authenticated users can change avatar.', 401);
 
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) await fs.promises.unlink(userAvatarFilePath);
+      await this.storagemProvider.deleteFile(user.avatar);
     }
 
-    user.avatar = avatarFilename;
+    const filename = await this.storagemProvider.saveFile(avatarFilename);
+
+    user.avatar = filename;
     await this.usersRepository.save(user);
 
     return user;
