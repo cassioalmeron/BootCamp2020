@@ -8,14 +8,14 @@ const fakeMailProvider = new FakeMailProvider();
 
 let fakeUsersTokensRepository: FakeUserTokensRepository;
 let fakeUsersRepository: FakeUsersRepository;
-let sendForgotPasswordEmailService: SendForgotPasswordEmailService;
+let sendForgotPasswordEmail: SendForgotPasswordEmailService;
 
 describe('SendForgotPasswordEmailService', () => {
   beforeEach(() => {
     fakeUsersTokensRepository = new FakeUserTokensRepository();
     fakeUsersRepository = new FakeUsersRepository();
 
-    sendForgotPasswordEmailService = new SendForgotPasswordEmailService(
+    sendForgotPasswordEmail = new SendForgotPasswordEmailService(
       fakeUsersRepository,
       fakeUsersTokensRepository,
       fakeMailProvider,
@@ -31,7 +31,7 @@ describe('SendForgotPasswordEmailService', () => {
       password: '123456',
     });
 
-    await sendForgotPasswordEmailService.execute({
+    await sendForgotPasswordEmail.execute({
       email: 'cassioalmeron@gmail.com',
     });
 
@@ -40,7 +40,7 @@ describe('SendForgotPasswordEmailService', () => {
 
   it('should be not able to recover a non-existing user password', async () => {
     await expect(
-      sendForgotPasswordEmailService.execute({
+      sendForgotPasswordEmail.execute({
         email: 'cassioalmeron@gmail.com',
       }),
     ).rejects.toBeInstanceOf(AppError);
@@ -55,7 +55,7 @@ describe('SendForgotPasswordEmailService', () => {
       password: '123456',
     });
 
-    await sendForgotPasswordEmailService.execute({
+    await sendForgotPasswordEmail.execute({
       email: 'cassioalmeron@gmail.com',
     });
 
