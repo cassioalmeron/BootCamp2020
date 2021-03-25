@@ -1,6 +1,5 @@
-import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import AppError from '@shared/errors/AppError';
-import { th } from 'date-fns/locale';
+import { differenceInHours } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 import IUsersRepository from '../repositories/IUsersRepository';
@@ -29,6 +28,11 @@ class ResetPasswordService {
     const user = await this.usersRepository.findById(userToken?.user_id);
 
     if (!user) throw new AppError('User does not exists');
+
+    const tokenCreatedAt = userToken.created_at;
+
+    if (differenceInHours(Date.now(), tokenCreatedAt) > 2)
+      throw new AppError('Token expired');
 
     if (user) {
       user.password = await this.hashProvider.generateHash(password);
