@@ -9,7 +9,7 @@ class ResetPasswordController {
     const authenticateUser = container.resolve(ResetPasswordService);
     await authenticateUser.execute({ password, token });
 
-    return response.status(204);
+    return response.status(204).json();
   }
 }
 

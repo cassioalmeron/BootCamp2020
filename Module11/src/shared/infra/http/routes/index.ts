@@ -9,6 +9,6 @@ const router = Router();
 router.use('/appointments', appointmentsRouter);
 router.use('/users', usersRouter);
 router.use('/sessions', sessionsRouter);
-router.use('/password', sessionsRouter);
+router.use('/password', passwordRouter);
 
 export default router;
