@@ -13,7 +13,7 @@ const defaultUserData = {
   password: '123456',
 };
 
-describe('CreateUser', () => {
+describe('UpdateProfileService', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     hashProvider = new FakeHashProvider();
@@ -32,6 +32,14 @@ describe('CreateUser', () => {
 
     expect(updatedUser.name).toBe('Cassio Pinheiro Almeron');
     expect(updatedUser.email).toBe('cassioalmeron@brturbo.com');
+  });
+
+  it('should not be able to update the profile when the user id does not exists', async () => {
+    await fakeUsersRepository.create(defaultUserData);
+
+    await expect(
+      updateProfile.execute({ user_id: 'Inválid Id', ...defaultUserData }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 
   it('should be able to change to another existing email', async () => {
@@ -71,7 +79,7 @@ describe('CreateUser', () => {
   });
 
   it('should not be able to update the password when the old password is different', async () => {
-    const generateHash = jest.spyOn(hashProvider, 'compareHash');
+    const compareHash = jest.spyOn(hashProvider, 'compareHash');
 
     const user = await fakeUsersRepository.create(defaultUserData);
 
@@ -85,7 +93,7 @@ describe('CreateUser', () => {
     await expect(updateProfile.execute(dataToUpdate)).rejects.toBeInstanceOf(
       AppError,
     );
-    expect(generateHash).toHaveBeenCalledWith('123456X', user.password);
+    expect(compareHash).toHaveBeenCalledWith('wrong-password', user.password);
   });
 
   it('should not be able to update the password when the old password does not been informated', async () => {

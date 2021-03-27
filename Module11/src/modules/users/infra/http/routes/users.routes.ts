@@ -2,13 +2,13 @@ import { Router } from 'express';
 import multer from 'multer';
 import uploadConfig from '@config/upload';
 import ensudeAuthenticated from '../middlewares/ensudeAuthenticated';
-import UsersControllers from '../controllers/UsersController';
+import UsersController from '../controllers/UsersController';
 import UserAvatarController from '../controllers/UserAvatarController';
 
 const router = Router();
 const upload = multer(uploadConfig);
 
-router.post('/', UsersControllers.create);
+router.post('/', UsersController.create);
 
 router.patch(
   '/avatar',

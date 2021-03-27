@@ -20,7 +20,7 @@ interface IResponseDto {
 class AuthenticateUserService {
   constructor(
     @inject('UsersRepository') private usersRepository: IUsersRepository,
-    @inject('BCryptHashProvider') private hashProvider: IHashProvider,
+    @inject('HashProvider') private hashProvider: IHashProvider,
   ) {}
 
   public async execute({
