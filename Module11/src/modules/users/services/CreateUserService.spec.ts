@@ -4,43 +4,32 @@ import CreateUserService from './CreateUserService';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 
 const fakeHashProvider = new FakeHashProvider();
+let fakeUsersRepository: FakeUsersRepository;
+let createUser: CreateUserService;
+
+const defaultUserData = {
+  name: 'Cássio Almeron',
+  email: 'cassioalmeron@gmail.com',
+  password: '123456',
+};
 
 describe('CreateUser', () => {
-  it('should be able to create a new user', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
-    );
+  beforeEach(() => {
+    fakeUsersRepository = new FakeUsersRepository();
+    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider);
+  });
 
-    const user = await createUser.execute({
-      name: 'Cássio Almeron',
-      email: 'cassioalmeron@gmail.com',
-      password: '123456',
-    });
+  it('should be able to create a new user', async () => {
+    const user = await createUser.execute(defaultUserData);
 
     expect(user).toHaveProperty('id');
   });
 
   it('should not be able to create a new user with same email', async () => {
-    const fakeUsersRepository = new FakeUsersRepository();
-    const createUser = new CreateUserService(
-      fakeUsersRepository,
-      fakeHashProvider,
+    await createUser.execute(defaultUserData);
+
+    await expect(createUser.execute(defaultUserData)).rejects.toBeInstanceOf(
+      AppError,
     );
-
-    await createUser.execute({
-      name: 'Cássio Almeron',
-      email: 'cassioalmeron@gmail.com',
-      password: '123456',
-    });
-
-    expect(
-      createUser.execute({
-        name: 'Cássio Almeron',
-        email: 'cassioalmeron@gmail.com',
-        password: '123456',
-      }),
-    ).rejects.toBeInstanceOf(AppError);
   });
 });
