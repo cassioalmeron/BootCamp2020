@@ -16,12 +16,14 @@ describe('ListProviderMonthAvailabilityService', () => {
     for (let i = 8; i < 18; i += 1) {
       fakeAppointmentsRepository.create({
         provider_id: '0',
+        user_id: '0',
         date: new Date(2021, 2, 20, i, 0, 0),
       });
     }
 
     fakeAppointmentsRepository.create({
       provider_id: '0',
+      user_id: '0',
       date: new Date(2021, 3, 21, 8, 0, 0),
     });
 

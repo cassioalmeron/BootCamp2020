@@ -2,14 +2,7 @@ import ICreateAppointmentDTO from '@modules/appointments/dtos/ICreateAppointment
 import IFindAllInDayFromProviderDTO from '@modules/appointments/dtos/IFindAllInDayFromProviderDTO';
 import IFindAllInMonthFromProviderDTO from '@modules/appointments/dtos/IFindAllInMonthFromProviderDTO';
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
-import { startOfMonth } from 'date-fns';
-import {
-  Between,
-  EntityRepository,
-  getRepository,
-  Raw,
-  Repository,
-} from 'typeorm';
+import { EntityRepository, getRepository, Raw, Repository } from 'typeorm';
 import Appointment from '../entities/Appointment';
 
 @EntityRepository(Appointment)
