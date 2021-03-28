@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns';
 import { Router } from 'express';
 import ensudeAuthenticated from '@modules/users/infra/http/middlewares/ensudeAuthenticated';
 import AppointmentsController from '../controllers/AppointmentsController';
