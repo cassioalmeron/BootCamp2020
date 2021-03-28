@@ -10,7 +10,7 @@ const defaultUserData = {
   password: '123456',
 };
 
-describe('ShowProfileService', () => {
+describe('ListProvidersService', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
 
