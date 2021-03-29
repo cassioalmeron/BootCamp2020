@@ -1,0 +1,8 @@
+.idea/
+.vscode/
+node_modules/
+coverage/
+build/
+dist/
+tmp/
+!tmp/.gitkeep
