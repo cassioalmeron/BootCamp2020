@@ -1,29 +1,31 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import { inject, injectable } from 'tsyringe';
+import aws from 'aws-sdk';
+import mailConfig from '@config/mail';
+import e from 'express';
 import IMailTemplateProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
 import ISendMailDTO from '../dtos/ISendMailDTO';
 import IMailProvider from '../models/IMailProvider';
 
 @injectable()
-export default class EtherealMailProvider implements IMailProvider {
+export default class SESMailProvider implements IMailProvider {
   private client: Transporter;
 
   constructor(
     @inject('MailTemplateProvider')
     private mailTemplateProvider: IMailTemplateProvider,
   ) {
-    nodemailer.createTestAccount().then(account => {
-      const transporter = nodemailer.createTransport({
-        host: account.smtp.host,
-        port: account.smtp.port,
-        secure: account.smtp.secure,
-        auth: {
-          user: account.user,
-          pass: account.pass,
-        },
-      });
+    // configure AWS SDK
+    // process.env.AWS_ACCESS_KEY_ID = '....';
+    // process.env.AWS_SECRET_ACCESS_KEY = '....';
+    const ses = new aws.SES({
+      apiVersion: '2010-12-01',
+      // region: 'us-east-1',
+    });
 
-      this.client = transporter;
+    // create Nodemailer SES transporter
+    this.client = nodemailer.createTransport({
+      SES: { ses, aws },
     });
   }
 
@@ -33,10 +35,12 @@ export default class EtherealMailProvider implements IMailProvider {
     subject,
     templateData,
   }: ISendMailDTO): Promise<void> {
-    const info = await this.client.sendMail({
+    const { name, email } = mailConfig.defaults.from;
+
+    await this.client.sendMail({
       from: {
-        name: from?.name || 'Equipe GoBarber',
-        address: from?.email || 'equipe@gobarber.com.br',
+        name: from?.name || name,
+        address: from?.email || email,
       },
       to: {
         name: to.name,
@@ -45,9 +49,5 @@ export default class EtherealMailProvider implements IMailProvider {
       subject,
       html: await this.mailTemplateProvider.parse(templateData),
     });
-
-    console.log('Message sent: %s', info.messageId);
-    // Preview only available when sending through an Ethereal account
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
   }
 }
