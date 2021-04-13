@@ -1,6 +1,7 @@
 import { Entity, Column } from 'typeorm';
 import EntityBase from '@shared/infra/typeorm/EntityBase';
 import { Exclude, Expose } from 'class-transformer';
+import uploadConfig from '@config/upload';
 
 @Entity('users')
 class User extends EntityBase {
@@ -19,9 +20,16 @@ class User extends EntityBase {
 
   @Expose({ name: 'avatar_url' })
   getAvatarUrl(): string | null {
-    return this.avatar
-      ? `${process.env.APP_API_URL}/files/${this.avatar}`
-      : null;
+    if (!this.avatar) return null;
+
+    switch (uploadConfig.driver) {
+      case 's3':
+        return `https://${uploadConfig.config.aws.bucket}.s3.amazonws.com/${this.avatar}`;
+      case 'disk':
+        return `${process.env.APP_API_URL}/files/${this.avatar}`;
+      default:
+        return null;
+    }
   }
 }
 
