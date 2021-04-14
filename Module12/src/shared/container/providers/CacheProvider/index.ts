@@ -7,4 +7,4 @@ const providers = {
   redis: container.resolve(RedisCacheProvider),
 };
 
-container.registerInstance<ICacheProvider>('MailProvider', providers.redis);
+container.registerInstance<ICacheProvider>('CacheProvider', providers.redis);
