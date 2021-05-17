@@ -32,12 +32,14 @@ const localStorageUserKey = '@GoBarber:user';
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem(localStorageTokenKey);
-    const userJson = localStorage.getItem(localStorageUserKey);
+    const user = localStorage.getItem(localStorageUserKey);
 
-    let user = {};
-    if (userJson) user = JSON.parse(userJson);
+    if (token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
+      return { token, user: JSON.parse(user) } as AuthState;
+    }
 
-    return { token, user } as AuthState;
+    return {} as AuthState;
   });
 
   const signIn = useCallback(
@@ -47,6 +49,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       const { token, user } = response.data;
       localStorage.setItem(localStorageTokenKey, token);
       localStorage.setItem(localStorageUserKey, JSON.stringify(user));
+
+      api.defaults.headers.authorization = `Bearer ${token}`;
 
       setData({ user, token });
     },
