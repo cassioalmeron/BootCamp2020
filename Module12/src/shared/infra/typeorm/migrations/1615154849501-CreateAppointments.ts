@@ -15,14 +15,12 @@ export default class CreateAppointments1615154849501
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'name',
+            name: 'provider',
             type: 'varchar',
-            isNullable: false,
           },
           {
-            name: 'email',
-            type: 'varchar',
-            isNullable: false,
+            name: 'date',
+            type: 'timestamp with time zone',
           },
           {
             name: 'created_at',
