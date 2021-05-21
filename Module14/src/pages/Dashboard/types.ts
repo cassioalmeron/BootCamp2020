@@ -1,5 +1,6 @@
+/* eslint-disable camelcase */
 export interface Provider {
   id: string;
   name: string;
-  avatarurl: string;
+  avatar_url: string;
 }
