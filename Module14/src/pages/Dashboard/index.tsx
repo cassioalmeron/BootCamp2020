@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
               navigateToCreateAppointment(provider.id);
             }}
           >
-            <ProviderAvatar source={{ url: provider.avatar_url }} />
+            <ProviderAvatar source={{ uri: provider.avatar_url }} />
 
             <ProviderInfo>
               <ProviderName>{provider.name}</ProviderName>
