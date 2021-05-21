@@ -11,6 +11,9 @@ class Appointment extends EntityBase {
   @JoinColumn({ name: 'provider_id' })
   provider: User;
 
+  @Column({ name: 'provider' })
+  providerName: string;
+
   @Column()
   user_id: string;
 

@@ -29,8 +29,6 @@ class CreateAppointmentService {
     provider_id,
     user_id,
   }: IRequestDto): Promise<Appointment> {
-    // const parsedDate = startOfHour(date);
-
     if (isBefore(date, Date.now()))
       throw new AppError('Cannot create an appointment on a past date!');
 
