@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../hooks/auth';
+import api from '../../services/api';
 
 import {
   Container,
@@ -9,11 +10,20 @@ import {
   UserName,
   ProfileButton,
   UserAvatar,
+  ProvidersList,
 } from './styles';
+import { Provider } from './types';
 
 const Dashboard: React.FC = () => {
+  const [providers, setProviders] = useState<Provider[]>([]);
   const { signOut, user } = useAuth();
   const { navigate } = useNavigation();
+
+  useEffect(() => {
+    api.get('providers').then(response => {
+      setProviders(response.data);
+    });
+  }, []);
 
   const navigateToProfile = useCallback(() => {
     navigate('Profile');
@@ -32,6 +42,12 @@ const Dashboard: React.FC = () => {
           <UserAvatar source={{ uri: user.avatar_url }} />
         </ProfileButton>
       </Header>
+
+      <ProvidersList
+        data={providers}
+        keyExtractor={provider => provider.id}
+        renderItem={({ item }) => <UserName>{item.name}</UserName>}
+      />
     </Container>
   );
 };
