@@ -1,8 +1,17 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-expressions */
 import { useNavigation } from '@react-navigation/core';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import React, { useCallback, useRef } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native';
+import {
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
+
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import * as Yup from 'yup';
@@ -22,11 +31,13 @@ import {
 interface ProfileFormData {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
   const navigation = useNavigation();
 
@@ -43,12 +54,27 @@ const Profile: React.FC = () => {
     try {
       await schema.validate(data, { abortEarly: false });
 
-      await api.post('/users', data);
+      const {
+        name,
+        email,
+        old_password,
+        password,
+        password_confirmation,
+      } = data;
 
-      Alert.alert(
-        'Cadastro realizado',
-        'Você já pode fazer seu logon no GoBarber!',
-      );
+      const formData = {
+        name,
+        email,
+        ...(old_password
+          ? { old_password, password, password_confirmation }
+          : {}),
+      };
+
+      const response = await api.put('/profile', formData);
+
+      updateUser(response.data);
+
+      Alert.alert('Perfil atualizado com sucesso!');
 
       navigation.goBack();
     } catch (err) {
@@ -59,8 +85,8 @@ const Profile: React.FC = () => {
       }
 
       Alert.alert(
-        'Erro na cadastro',
-        'Ocorreu um erro ao fazer o cadastro, tente novamente',
+        'Erro na atualização do perfil',
+        'Ocorreu um erro ao atualizar seu perfil, tente novamente',
       );
     }
   }, []);
@@ -93,7 +119,7 @@ const Profile: React.FC = () => {
               <Title>Meu perfil</Title>
             </View>
 
-            <Form onSubmit={handleProfile} ref={formRef}>
+            <Form onSubmit={handleProfile} ref={formRef} initialData={user}>
               <Input
                 autoCapitalize="words"
                 name="name"
@@ -136,7 +162,8 @@ const Profile: React.FC = () => {
                 placeholder="Nova senha"
                 returnKeyType="next"
                 onSubmitEditing={() =>
-                  passwordConfirmationInputRef.current?.focus()}
+                  passwordConfirmationInputRef.current?.focus()
+                }
               />
 
               <Input
@@ -163,7 +190,19 @@ const Profile: React.FC = () => {
 const schema = Yup.object().shape({
   name: Yup.string().required('Nome obrigatório'),
   email: Yup.string().email('E-mail inválido').required('E-mail obrigatório'),
-  password: Yup.string().min(6, 'No mínimo 6 dígitos'),
+  old_password: Yup.string(),
+  password: Yup.string().when('old_password', {
+    is: (val: string) => !!val.length,
+    then: Yup.string().required('Nova senha não informada'),
+    otherwise: Yup.string(),
+  }),
+  password_confirmation: Yup.string()
+    .when('old_password', {
+      is: (val: string) => !!val.length,
+      then: Yup.string().required('Nova senha não informada'),
+      otherwise: Yup.string(),
+    })
+    .oneOf([Yup.ref('password'), null], 'Confirmação incorreta'),
 });
 
 export default Profile;
