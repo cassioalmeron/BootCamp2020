@@ -28,8 +28,8 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-const localStorageTokenKey = '@GoBarber:token';
-const localStorageUserKey = '@GoBarber:user';
+export const localStorageTokenKey = '@GoBarber:token';
+export const localStorageUserKey = '@GoBarber:user';
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
